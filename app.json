@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/pregnaGuideIcon.png",
         "backgroundColor": "#F9F8F2"
-      }
+      },
+      "package": "com.fakhripm.PPAM"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "94cc2de5-dedf-40d0-ad9a-a51d9041c1e9"
+      }
     }
   }
 }
