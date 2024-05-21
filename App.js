@@ -10,7 +10,7 @@ function App() {
         <NavigationContainer>
             <AuthStack />
         </NavigationContainer>
-    )
+    );
 }
 
 export default App;

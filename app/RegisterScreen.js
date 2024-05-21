@@ -2,6 +2,7 @@ import React from "react";
 import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useFonts } from "expo-font";
+import { Link } from "expo-router";
 
 const RegisterScreen = ({navigation}) => {
   let [fontsLoaded] = useFonts({
@@ -115,9 +116,7 @@ const RegisterScreen = ({navigation}) => {
         {/* Login Button Redirect */}
         <View style={{flexDirection:'row', justifyContent:'center', marginBottom:30}}>
             <Text>Already have an account? Click here to</Text>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Text style={{color:'#f8c9e2', fontWeight:'700'}}> Login</Text>
-            </TouchableOpacity>
+            <Link href='/LoginScreen' style={{color:'#f8c9e2', fontWeight:'700'}}> Login</Link>
         </View>
 
       </View>
