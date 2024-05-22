@@ -4,10 +4,10 @@ import Entypo from '@expo/vector-icons/Entypo';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { Redirect } from 'expo-router';
-import App from '../App';
+// import App from '../App';
 
 // Keep the splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 export default function startupScreen() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -53,8 +53,8 @@ export default function startupScreen() {
         <Text>PPAM SplashScreen Demo! 👋</Text>
         <Entypo name="rocket" size={30} />
       </View>
-      {/* <Redirect href='/LoginScreen' /> */}
-      <App />
+      <Redirect href='/LoginScreen' />
+      {/* <App /> */}
     </>
   );
 }

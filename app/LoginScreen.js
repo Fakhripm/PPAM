@@ -4,7 +4,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useFonts } from "expo-font";
 import { Link } from "expo-router";
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = () => {
   let [fontsLoaded] = useFonts({
     'Kanit-SemiBold': require('../assets/Kanit-SemiBold.ttf'),
   });
