@@ -29,7 +29,7 @@ const EditProfileScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <MaterialIcons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Ubah Profil</Text>
@@ -100,14 +100,20 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#FDB6DB',
     height: 96,
-    justifyContent: 'center',
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  backButton: {
+    marginRight: 10,
   },
   headerText: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 20,
+    textAlign: 'center',
+    flex: 1,
+    marginRight: 30,
   },
   form: {
     marginTop: 20,
@@ -134,14 +140,14 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     flex: 1,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#FDB6DB',
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
     paddingVertical: 10,
-    marginTop: 110,
+    marginTop: 20,
   },
   cancelButtonText: {
     color: '#FDB6DB',
@@ -155,7 +161,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginLeft: 10,
-    marginTop: 110,
+    marginTop: 20,
   },
   saveButtonText: {
     color: '#fff',

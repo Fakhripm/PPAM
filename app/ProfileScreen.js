@@ -1,71 +1,71 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { Link } from 'expo-router';
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-
-  const handleLogout = () => {
-    navigation.navigate('Login');
-  };
-
-  const handleEditProfile = () => {
-    navigation.navigate('EditProfile');
-  };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Profil</Text>
       </View>
-      <View style={styles.profileContainer}>
-        <Image
-          source={{ uri: 'https://via.placeholder.com/128x128' }} 
-          style={styles.profileImage}
-        />
-        <View style={styles.profileTextContainer}>
-          <Text style={styles.username}>UserXV16708249</Text>
-          <TouchableOpacity style={styles.cameraIconContainer}>
-            <FontAwesome name="camera" size={24} color="white" />
-          </TouchableOpacity>
+      <View style={styles.content}>
+        <View style={styles.profileContainer}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: 'https://via.placeholder.com/128x128' }}
+              style={styles.profileImage}
+            />
+            <TouchableOpacity style={styles.cameraIconContainer}>
+              <FontAwesome name="camera" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.profileTextContainer}>
+            <Text style={styles.username}>UserXV16708249</Text>
+          </View>
         </View>
-      </View>
-      <TouchableOpacity style={styles.updateProfileButton} onPress={handleEditProfile}>
-        <Text style={styles.updateProfileButtonText}>Ubah Profil</Text>
-      </TouchableOpacity>
-      <View style={styles.optionsWrapper}>
-        <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.optionButton}>
-            <MaterialIcons name="phone" size={24} color="dodgerblue" />
-            <Text style={styles.optionText}>Hubungi Kami</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionButton}>
-            <MaterialIcons name="description" size={24} color="dodgerblue" />
-            <Text style={styles.optionText}>Syarat & Ketentuan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionButton}>
-            <MaterialIcons name="lock" size={24} color="dodgerblue" />
-            <Text style={styles.optionText}>Kebijakan Privasi</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.optionButton}>
-            <MaterialIcons name="info" size={24} color="dodgerblue" />
-            <Text style={styles.optionText}>Tentang Kami</Text>
-          </TouchableOpacity>
+        <Link href="/EditProfileScreen" style={styles.updateProfileButton}>
+          <FontAwesome name="pencil" size={16} color="white" style={styles.pencilIcon} />
+          <Text style={styles.updateProfileButtonText}>Ubah Profil</Text>
+        </Link>
+        <View style={styles.optionsWrapper}>
+          <View style={styles.optionsContainer}>
+            <View style={styles.optionRow}>
+              <TouchableOpacity style={styles.optionButton}>
+                <MaterialIcons name="phone" size={24} color="#B0CFFF" />
+                <Text style={styles.optionText}>Hubungi Kami</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.optionButton}>
+                <MaterialIcons name="description" size={24} color="#B0CFFF" />
+                <Text style={styles.optionText}>Syarat & Ketentuan</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.optionRow}>
+              <TouchableOpacity style={styles.optionButton}>
+                <MaterialIcons name="lock" size={24} color="#B0CFFF" />
+                <Text style={styles.optionText}>Kebijakan Privasi</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.optionButton}>
+                <MaterialIcons name="info" size={24} color="#B0CFFF" />
+                <Text style={styles.optionText}>Tentang Kami</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
+        <Link href="/LoginScreen" style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Logout</Text>
+        </Link>
       </View>
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
       <View style={styles.footer}>
-        <TouchableOpacity>
-          <MaterialIcons name="home" size={28} color="black" />
+        <TouchableOpacity style={styles.footerButton}>
+          <MaterialIcons name="home" size={32} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <MaterialIcons name="shopping-cart" size={28} color="black" />
+        <TouchableOpacity style={styles.footerButton}>
+          <MaterialIcons name="shopping-cart" size={32} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <MaterialIcons name="person" size={28} color="pink" />
+        <TouchableOpacity style={styles.footerButton}>
+          <MaterialIcons name="person" size={32} color="pink" />
         </TouchableOpacity>
       </View>
     </View>
@@ -76,24 +76,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    position: 'relative', 
   },
   header: {
     backgroundColor: '#FDB6DB',
     height: 96,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '100%', 
   },
   headerText: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: 20,
+  },
+  content: {
+    paddingHorizontal: 20, 
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 20,
-    paddingHorizontal: 20,
+  },
+  imageContainer: {
+    position: 'relative',
   },
   profileImage: {
     width: 128,
@@ -101,86 +107,108 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 3,
     borderColor: '#fff',
-    marginRight: 20,
-  },
-  profileTextContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  username: {
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   cameraIconContainer: {
-    marginTop: 5,
-    backgroundColor: 'dodgerblue',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#B0CFFF',
     padding: 5,
     borderRadius: 20,
     alignItems: 'center',
     width: 40,
   },
+  profileTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginLeft: 20,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   updateProfileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#B0CFFF',
-    width: 343,
-    height: 36.47,
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
-    marginHorizontal: 34,
-    marginTop: 20,
+    justifyContent: 'center',
+    marginTop: 30,
+    textAlign: 'center',
+  },
+  pencilIcon: {
+    marginRight: 15,
   },
   updateProfileButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   optionsWrapper: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 30,
   },
   optionsContainer: {
-    width: 343,
-    height: 202,
+    width: '100%',
     borderWidth: 2,
     borderColor: '#FDB6DB',
     borderRadius: 10,
     padding: 10,
     justifyContent: 'space-around',
   },
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
   optionButton: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFF',
     borderRadius: 5,
-    marginTop: 10,
-  },
+    width: 160,
+    height: 80,
+    borderWidth: 2,
+    borderColor: '#FFF',
+    marginHorizontal: 5,
+  },  
   optionText: {
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: 12,
+    textAlign: 'left',
   },
   logoutButton: {
-    width: 343,
+    width: '100%',
     height: 38.59,
     borderWidth: 2,
     borderColor: '#FDB6DB',
     borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    marginTop: 110,
+    marginTop: 80,
+    textAlign: 'center',
+    lineHeight: 38.59
   },
   logoutButtonText: {
     color: '#FDB6DB',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   footer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 10,
+    paddingVertical: 15,
     borderTopWidth: 1,
     borderColor: '#eaeaea',
+    backgroundColor: '#fff',
+  },
+  footerButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
