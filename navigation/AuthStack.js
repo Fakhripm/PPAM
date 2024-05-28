@@ -14,6 +14,9 @@
 //             <Stack.Screen name='Register' component={RegisterScreen} />
 //             <Stack.Screen name="Profile" component={ProfileScreen} />
 //             <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+//             <Stack.Screen name="EmergencyRegistration" component={EmergencyRegistrationScreen} />
+//             <Stack.Screen name="SOS" component={SOSScreen} />
+//             <Stack.Screen name="TrackLocation" component={TrackLocationScreen} />
 //         </Stack.Navigator>
 //     );
 // };
