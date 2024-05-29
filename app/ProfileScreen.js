@@ -1,26 +1,142 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../lib/supabase';
 
 const ProfileScreen = () => {
+  const [profile, setProfile] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState('https://via.placeholder.com/128x128');
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        
+        if (userError) {
+          console.error('Error fetching user:', userError);
+          return;
+        }
+
+        const user = userData?.user;
+
+        if (user) {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('username, avatar_url')
+            .eq('id', user.id)
+            .single();
+
+          if (error) {
+            console.error('Error fetching profile:', error);
+          } else {
+            setProfile(data);
+            if (data.avatar_url) {
+              const { publicURL, error: publicURLError } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(data.avatar_url);
+
+              if (publicURLError) {
+                console.error('Error getting public URL:', publicURLError);
+              } else {
+                console.log('Public URL:', publicURL);
+                setAvatarUrl(publicURL);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Unexpected error fetching profile:', error);
+      }
+    }
+
+    fetchProfile();
+  }, []);
 
   async function handleSignOut() {
     try {
-      const {error} = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
 
       if (error) {
         console.error('Error signing out:', error);
-      }
-      else {
+      } else {
         router.replace('/LoginScreen');
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Unexpected error during sign out:', error);
     }
   }
+
+  const handleUploadImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const { uri } = result.assets[0];
+      const path = `avatars/${uri.split('/').pop()}`;
+      const file = {
+        uri,
+        name: path,
+        type: 'image/jpeg', 
+      };
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        console.log('Uploading image...');
+        const { data, error } = await supabase.storage
+          .from('avatars')
+          .upload(path, file);
+
+        if (error) {
+          console.error('Error uploading image:', error);
+          Alert.alert('Upload Error', error.message);
+        } else {
+          console.log('Image uploaded:', data);
+
+          const { publicURL, error: publicURLError } = supabase.storage
+            .from('avatars')
+            .getPublicUrl(data.path);
+
+          if (publicURLError) {
+            console.error('Error getting public URL:', publicURLError);
+          } else {
+            console.log('New Public URL:', publicURL);
+            setAvatarUrl(publicURL);
+            updateProfileAvatar(data.path);
+          }
+        }
+      } catch (error) {
+        console.error('Unexpected error during image upload:', error);
+      }
+    }
+  };
+
+  const updateProfileAvatar = async (path) => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const user = userData?.user;
+
+      if (user) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ avatar_url: path })
+          .eq('id', user.id);
+
+        if (error) {
+          console.error('Error updating profile:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Unexpected error updating profile:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -31,15 +147,16 @@ const ProfileScreen = () => {
         <View style={styles.profileContainer}>
           <View style={styles.imageContainer}>
             <Image
-              source={{ uri: 'https://via.placeholder.com/128x128' }}
+              source={{ uri: avatarUrl }}
               style={styles.profileImage}
+              onError={(e) => console.error('Image loading error:', e.nativeEvent.error)}
             />
-            <TouchableOpacity style={styles.cameraIconContainer}>
+            <TouchableOpacity style={styles.cameraIconContainer} onPress={handleUploadImage}>
               <FontAwesome name="camera" size={24} color="white" />
             </TouchableOpacity>
           </View>
           <View style={styles.profileTextContainer}>
-            <Text style={styles.username}>UserXV16708249</Text>
+            <Text style={styles.username}>{profile ? profile.username : 'Loading...'}</Text>
           </View>
         </View>
         <Link href="/EditProfileScreen" style={styles.updateProfileButton}>
@@ -70,7 +187,7 @@ const ProfileScreen = () => {
             </View>
           </View>
         </View>
-        <TouchableOpacity style={styles.logoutButton} onPress={() => handleSignOut()}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </View>
@@ -78,9 +195,9 @@ const ProfileScreen = () => {
         <TouchableOpacity style={styles.footerButton}>
           <MaterialIcons name="home" size={32} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
+        <Link href="/BelanjaBumilScreen" style={styles.footerButton}>
           <MaterialIcons name="shopping-cart" size={32} color="black" />
-        </TouchableOpacity>
+        </Link>
         <TouchableOpacity style={styles.footerButton}>
           <MaterialIcons name="person" size={32} color="pink" />
         </TouchableOpacity>
@@ -93,14 +210,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    position: 'relative', 
+    position: 'relative',
   },
   header: {
     backgroundColor: '#FDB6DB',
     height: 96,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%', 
+    width: '100%',
   },
   headerText: {
     color: '#fff',
@@ -108,7 +225,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   content: {
-    paddingHorizontal: 20, 
+    paddingHorizontal: 20,
   },
   profileContainer: {
     flexDirection: 'row',
@@ -191,7 +308,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FFF',
     marginHorizontal: 5,
-  },  
+  },
   optionText: {
     marginLeft: 10,
     fontSize: 12,
@@ -205,7 +322,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 80,
     alignItems: 'center',
-    lineHeight: 38.59
+    lineHeight: 38.59,
   },
   logoutButtonText: {
     color: '#FDB6DB',

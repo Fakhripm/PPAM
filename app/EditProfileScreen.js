@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useNavigation } from '@react-navigation/native';
+import { supabase } from '../lib/supabase';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
   const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
@@ -21,9 +21,44 @@ const EditProfileScreen = () => {
   };
 
   const handleConfirm = (date) => {
-    const formattedDate = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+    const formattedDate = date.toISOString().split('T')[0];
     setDateOfBirth(formattedDate);
     hideDatePicker();
+  };
+
+  const handleSave = async () => {
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        throw new Error('User not found');
+      }
+
+      const updates = {
+        id: user.id,
+        username: name,
+        date_of_birth: dateOfBirth,
+        phonenum: phoneNumber,
+      };
+
+      const { error } = await supabase
+        .from('profiles')
+        .upsert(updates, { returning: 'minimal' });
+
+      if (error) {
+        Alert.alert('Error', 'Failed to update profile.');
+        console.error(error);
+      } else {
+        Alert.alert('Success', 'Profile updated successfully.');
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error('Unexpected error during profile update:', error);
+      Alert.alert('Error', 'An unexpected error occurred.');
+    }
   };
 
   return (
@@ -48,7 +83,7 @@ const EditProfileScreen = () => {
           <Text style={styles.label}>Tanggal Lahir</Text>
           <TouchableOpacity onPress={showDatePicker}>
             <TextInput
-              placeholder="DD/MM/YYYY"
+              placeholder="YYYY-MM-DD"
               style={styles.input}
               value={dateOfBirth}
               editable={false}
@@ -62,15 +97,7 @@ const EditProfileScreen = () => {
             style={styles.input}
             value={phoneNumber}
             onChangeText={setPhoneNumber}
-          />
-        </View>
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            placeholder="test.example@mail.com"
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
+            keyboardType="phone-pad"
           />
         </View>
       </View>
@@ -84,7 +111,7 @@ const EditProfileScreen = () => {
         <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
           <Text style={styles.cancelButtonText}>Batalkan</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.saveButton}>
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Simpan</Text>
         </TouchableOpacity>
       </View>
