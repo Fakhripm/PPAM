@@ -1,13 +1,50 @@
-import React from "react";
-import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
+import React, { useState } from "react";
+import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity, AppState, Alert } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useFonts } from "expo-font";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { supabase } from "../lib/supabase";
+
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh()
+  }
+  else {
+    supabase.auth.stopAutoRefresh()
+  }
+})
 
 const LoginScreen = () => {
   let [fontsLoaded] = useFonts({
     'Kanit-SemiBold': require('../assets/Kanit-SemiBold.ttf'),
   });
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function signInWithEmail() {
+    setLoading(true);
+    try {
+      const response = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+      
+      if (response.error) {
+        Alert.alert(response.error.message);
+      }
+      else {
+        router.replace('/ProfileScreen');
+      }
+    }
+    catch (error) {
+      console.error('Unexpected error during login:', error)
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView style={{flex:1, justifyContent:'center', backgroundColor:'#f9f7f1'}}>
@@ -43,6 +80,8 @@ const LoginScreen = () => {
               placeholder='Email'
               style={{flex:1, paddingVertical:0}}
               keyboardType='email-address'
+              onChangeText={(text) => setEmail(text)}
+              value={email}
             />
         </View>
 
@@ -69,13 +108,15 @@ const LoginScreen = () => {
               placeholder='Password'
               style={{flex:1, paddingVertical:0}}
               secureTextEntry={true}
+              onChangeText={(text) => setPassword(text)}
+              value={password}
             />
         </View>
 
         {/* Login Button */}
         <View style={{flexDirection:'row'}}>
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={() => signInWithEmail()}
             style={{
               backgroundColor:'#f8c9e2',
               padding:20,

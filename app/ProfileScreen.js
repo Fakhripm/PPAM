@@ -1,9 +1,26 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
+import { supabase } from '../lib/supabase';
 
 const ProfileScreen = () => {
+
+  async function handleSignOut() {
+    try {
+      const {error} = await supabase.auth.signOut();
+
+      if (error) {
+        console.error('Error signing out:', error);
+      }
+      else {
+        router.replace('/LoginScreen');
+      }
+    }
+    catch (error) {
+      console.error('Unexpected error during sign out:', error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -53,9 +70,9 @@ const ProfileScreen = () => {
             </View>
           </View>
         </View>
-        <Link href="/LoginScreen" style={styles.logoutButton}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => handleSignOut()}>
           <Text style={styles.logoutButtonText}>Logout</Text>
-        </Link>
+        </TouchableOpacity>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.footerButton}>
@@ -187,7 +204,7 @@ const styles = StyleSheet.create({
     borderColor: '#FDB6DB',
     borderRadius: 5,
     marginTop: 80,
-    textAlign: 'center',
+    alignItems: 'center',
     lineHeight: 38.59
   },
   logoutButtonText: {

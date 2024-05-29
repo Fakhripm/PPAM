@@ -1,13 +1,67 @@
-import React from "react";
-import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
+import React, { useState } from "react";
+import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity, AppState, Alert } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { useFonts } from "expo-font";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import { supabase } from "../lib/supabase";
+
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh()
+  }
+  else {
+    supabase.auth.stopAutoRefresh()
+  }
+})
 
 const RegisterScreen = () => {
   let [fontsLoaded] = useFonts({
     'Kanit-SemiBold': require('../assets/Kanit-SemiBold.ttf'),
   });
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [loading, setLoading] = useState(false)
+
+  function validatePassword(p) {
+    const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return regex.test(p);
+  }
+
+  async function signUpWithEmail() {
+    setLoading(true);
+    try {
+      if (password !== confirmPassword) {
+        Alert.alert('Passwords do not match!');
+        return;
+      }
+
+      if (!validatePassword(password)) {
+        Alert.alert('Password must be at least 8 characters with an uppercase letter and a number!')
+        return;
+      }
+
+      const response = await supabase.auth.signUp({
+        email: email,
+        password: password,
+      });
+  
+      if (response.error) {
+          Alert.alert(response.error.message);
+      } else if (!response.data?.session) {
+          Alert.alert('Please check your inbox for email verification!');
+          router.replace('/LoginScreen');
+      } else {
+        router.replace('/LoginScreen');
+      }
+    } catch (error) {
+        console.error('Unexpected error during signup:', error);
+    } finally {
+        setLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView style={{flex:1, justifyContent:'center', backgroundColor:'#f9f7f1'}}>
@@ -43,6 +97,8 @@ const RegisterScreen = () => {
               placeholder='Email'
               style={{flex:1, paddingVertical:0}}
               keyboardType='email-address'
+              onChangeText={(text) => setEmail(text)}
+              value={email}
             />
         </View>
 
@@ -56,7 +112,7 @@ const RegisterScreen = () => {
             paddingBottom:8,
             paddingTop:8,
             paddingLeft:5,
-            marginBottom:25,
+            // marginBottom:25,
             alignItems:'center'
           }}>
             <MaterialIcons
@@ -69,7 +125,17 @@ const RegisterScreen = () => {
               placeholder='Password'
               style={{flex:1, paddingVertical:0}}
               secureTextEntry={true}
+              onChangeText={(text) => {setPassword(text); setIsPasswordValid(validatePassword(text))}}
+              value={password}
             />
+        </View>
+
+        <View style={{marginBottom:25}}>
+          {isPasswordValid ? (
+            <Text style={{color:'green'}}>Password meets requirements</Text>
+          ) : (
+            <Text style={{color:'red'}}>Password must be at least 8 characters with an uppercase letter and a number!</Text>
+          )}
         </View>
 
         {/* Confirm Password Input Area */}
@@ -82,7 +148,7 @@ const RegisterScreen = () => {
             paddingBottom:8,
             paddingTop:8,
             paddingLeft:5,
-            marginBottom:25,
+            // marginBottom:25,
             alignItems:'center'
           }}>
             <MaterialIcons
@@ -95,13 +161,21 @@ const RegisterScreen = () => {
               placeholder='Confirm Password'
               style={{flex:1, paddingVertical:0}}
               secureTextEntry={true}
+              onChangeText={(text) => setConfirmPassword(text)}
+              value={confirmPassword}
             />
+        </View>
+
+        <View style={{marginBottom:25}}>
+          {password !== confirmPassword && (
+            <Text style={{color:'red'}}>Password do not match!</Text>
+          )}
         </View>
 
         {/* Register Button */}
         <View style={{flexDirection:'row'}}>
           <TouchableOpacity
-            onPress={() => {}}
+            onPress={() => signUpWithEmail()}
             style={{
               backgroundColor:'#f8c9e2',
               padding:20,
