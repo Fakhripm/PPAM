@@ -70,24 +70,6 @@ const BelanjaBumilScreen = () => {
     }
   };
 
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.from('transactions').select('*');
-
-      if (error) {
-        console.error('Error fetching transactions:', error);
-        throw error;
-      }
-
-      console.log('Fetched transactions:', data);
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const applyFilters = () => {
     setAppliedFilters({ productType, location });
     setFilterVisible(false);
@@ -130,8 +112,8 @@ const BelanjaBumilScreen = () => {
       <View style={styles.header}>
         <Text style={styles.headerText}>List Produk</Text>
         <View style={styles.headerIcons}>
-          <TouchableOpacity onPress={fetchTransactions} style={styles.iconButton}>
-            <MaterialIcons name="refresh" size={28} color="white" />
+          <TouchableOpacity onPress={() => navigation.navigate('TransactionHistoryScreen')} style={styles.iconButton}>
+            <MaterialIcons name="history" size={28} color="white" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('CartScreen')} style={styles.iconButton}>
             <MaterialIcons name="shopping-cart" size={28} color="white" />
