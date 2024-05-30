@@ -13,6 +13,8 @@ import AddAddressScreen from "../app/AddAddressScreen";
 import BelanjaBumilScreen from "../app/BelanjaBumilScreen";
 import CartScreen from "../app/CartScreen";
 import PaymentScreen from "../app/PaymentScreen";
+import HomeConsultationScreen from "../app/HomeConsultationScreen";
+import ConsultationScreen from "../app/ConsultationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +34,9 @@ const AuthStack = () => {
             <Stack.Screen name="BelanjaBumil" component={BelanjaBumilScreen} />
             <Stack.Screen name="Cart" component={CartScreen} />
             <Stack.Screen name="Payment" component={PaymentScreen} />
+            <Stack.Screen name="HomeConsultation" component={HomeConsultationScreen} />
+            <Stack.Screen name="Consultation" component={ConsultationScreen} />
+            <Stack.Screen name="History" component={HistoryScreen} />
         </Stack.Navigator>
     );
 };
