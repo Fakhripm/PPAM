@@ -33,17 +33,7 @@ const ProfileScreen = () => {
           } else {
             setProfile(data);
             if (data.avatar_url) {
-              const { publicURL, error: publicURLError } = supabase
-                .storage
-                .from('avatars')
-                .getPublicUrl(data.avatar_url);
-
-              if (publicURLError) {
-                console.error('Error getting public URL:', publicURLError);
-              } else {
-                console.log('Public URL:', publicURL);
-                setAvatarUrl(publicURL.publicURL);
-              }
+              setAvatarUrl(data.avatar_url);
             }
           }
         }
@@ -86,9 +76,6 @@ const ProfileScreen = () => {
         type: 'image/jpeg', 
       };
 
-      const formData = new FormData();
-      formData.append('file', file);
-
       try {
         console.log('Uploading image...');
         const { data, error } = await supabase.storage
@@ -101,17 +88,17 @@ const ProfileScreen = () => {
         } else {
           console.log('Image uploaded:', data);
 
-          const { publicURL, error: publicURLError } = supabase
+          const { publicUrl, error: publicUrlError } = supabase
             .storage
             .from('avatars')
             .getPublicUrl(data.path);
 
-          if (publicURLError) {
-            console.error('Error getting public URL:', publicURLError);
+          if (publicUrlError) {
+            console.error('Error getting public URL:', publicUrlError);
           } else {
-            console.log('New Public URL:', publicURL.publicURL);
-            setAvatarUrl(publicURL.publicURL);
-            updateProfileAvatar(data.path);
+            console.log('New Public URL:', publicUrl.publicURL);
+            setAvatarUrl(publicUrl.publicURL);
+            updateProfileAvatar(publicUrl.publicURL);
           }
         }
       } catch (error) {
@@ -120,7 +107,7 @@ const ProfileScreen = () => {
     }
   };
 
-  const updateProfileAvatar = async (path) => {
+  const updateProfileAvatar = async (url) => {
     try {
       const { data: userData } = await supabase.auth.getUser();
       const user = userData?.user;
@@ -128,7 +115,7 @@ const ProfileScreen = () => {
       if (user) {
         const { error } = await supabase
           .from('profiles')
-          .update({ avatar_url: path })
+          .update({ avatar_url: url })
           .eq('id', user.id);
 
         if (error) {

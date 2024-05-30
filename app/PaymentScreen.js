@@ -14,6 +14,30 @@ const PaymentScreen = () => {
   const [cvv, setCvv] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const clearCart = async () => {
+    try {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      const userId = userData?.user.id;
+
+      if (userError) {
+        console.error('Error fetching user:', userError);
+        return;
+      }
+
+      const { error } = await supabase
+        .from('cart')
+        .delete()
+        .eq('id', userId);
+
+      if (error) {
+        console.error('Error clearing cart:', error);
+        throw error;
+      }
+    } catch (error) {
+      console.error('Unexpected error clearing cart:', error);
+    }
+  };
+
   const handlePayment = async () => {
     setLoading(true);
 
@@ -29,6 +53,8 @@ const PaymentScreen = () => {
         .eq('transaction_id', transactionId);
 
       if (updateError) throw updateError;
+
+      await clearCart();
 
       Alert.alert('Success', 'Payment successful!');
       navigation.goBack();
