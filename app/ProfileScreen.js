@@ -33,7 +33,8 @@ const ProfileScreen = () => {
           } else {
             setProfile(data);
             if (data.avatar_url) {
-              const { publicURL, error: publicURLError } = supabase.storage
+              const { publicURL, error: publicURLError } = supabase
+                .storage
                 .from('avatars')
                 .getPublicUrl(data.avatar_url);
 
@@ -41,7 +42,7 @@ const ProfileScreen = () => {
                 console.error('Error getting public URL:', publicURLError);
               } else {
                 console.log('Public URL:', publicURL);
-                setAvatarUrl(publicURL);
+                setAvatarUrl(publicURL.publicURL);
               }
             }
           }
@@ -100,15 +101,16 @@ const ProfileScreen = () => {
         } else {
           console.log('Image uploaded:', data);
 
-          const { publicURL, error: publicURLError } = supabase.storage
+          const { publicURL, error: publicURLError } = supabase
+            .storage
             .from('avatars')
             .getPublicUrl(data.path);
 
           if (publicURLError) {
             console.error('Error getting public URL:', publicURLError);
           } else {
-            console.log('New Public URL:', publicURL);
-            setAvatarUrl(publicURL);
+            console.log('New Public URL:', publicURL.publicURL);
+            setAvatarUrl(publicURL.publicURL);
             updateProfileAvatar(data.path);
           }
         }
