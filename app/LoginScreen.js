@@ -35,7 +35,7 @@ const LoginScreen = () => {
         Alert.alert(response.error.message);
       }
       else {
-        router.replace('/ProfileScreen');
+        router.replace('/HomeScreen');
       }
     }
     catch (error) {
