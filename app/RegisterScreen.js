@@ -33,6 +33,13 @@ const RegisterScreen = () => {
   async function signUpWithEmail() {
     setLoading(true);
     try {
+      // const {data : {user}} = await supabase.auth.checkEmail(email);
+      // if (user) {
+      //   Alert.alert('Email already in use!');
+      //   setLoading(false);
+      //   return;
+      // }
+
       if (password !== confirmPassword) {
         Alert.alert('Passwords do not match!');
         return;
@@ -49,7 +56,14 @@ const RegisterScreen = () => {
       });
   
       if (response.error) {
+        if (response.error.message.includes('rate limit exceeded')) {
+          Alert.alert('Email already in use!');
+          setLoading(false);
+          return;
+        }
+        else {
           Alert.alert(response.error.message);
+        }
       } else if (!response.data?.session) {
           Alert.alert('Please check your inbox for email verification!');
           router.replace('/LoginScreen');
