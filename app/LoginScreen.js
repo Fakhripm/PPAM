@@ -15,9 +15,9 @@ AppState.addEventListener('change', (state) => {
 })
 
 const LoginScreen = () => {
-  let [fontsLoaded] = useFonts({
-    'Kanit-SemiBold': require('../assets/Kanit-SemiBold.ttf'),
-  });
+  // let [fontsLoaded] = useFonts({
+  //   'Kanit-SemiBold': require('../assets/Kanit-SemiBold.ttf'),
+  // });
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -50,7 +50,7 @@ const LoginScreen = () => {
     <SafeAreaView style={{flex:1, justifyContent:'center', backgroundColor:'#f9f7f1'}}>
       <View style={{alignItems:'center', paddingHorizontal:25}}>
         {/* Teks Register (FontFamily perlu dibenerin) */}
-        <Text style={{fontFamily:'Kanit-SemiBold', fontSize:48, fontWeight:'300', color:'black', marginBottom:10}}>Login </Text>
+        <Text style={{fontSize:48, fontWeight:'bold', color:'black', marginBottom:10}}>Login </Text>
         
         {/* Gambar PregnaGuide */}
         <View>
