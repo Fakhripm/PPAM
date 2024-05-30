@@ -17,6 +17,9 @@ const HomeScreen = () => {
                 <TouchableOpacity onPress={() => navigation.navigate('SOSScreen')}>
                     <Text>Go To SOS Service</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('HomeConsultationScreen')}>
+                    <Text>Go To Consultation</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.footerButton}>
