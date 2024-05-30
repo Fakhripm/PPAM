@@ -93,7 +93,7 @@ const BelanjaBumilScreen = () => {
             <MaterialIcons name="star" size={16} color="yellow" />
             <Text style={styles.productRatingText}>{item.rating}</Text>
           </View>
-          <Text style={styles.productDescription}>{item.deskripsi}</Text>
+          <Text style={styles.productDescription}>{item.deskripsi.split(' ').slice(0, 10).join(' ')}...</Text>
         </View>
       </View>
     </TouchableOpacity>
