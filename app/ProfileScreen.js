@@ -194,9 +194,9 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerButton}>
+        <Link href="/HomeScreen" style={styles.footerButton}>
           <MaterialIcons name="home" size={32} color="black" />
-        </TouchableOpacity>
+        </Link>
         <Link href="/BelanjaBumilScreen" style={styles.footerButton}>
           <MaterialIcons name="shopping-cart" size={32} color="black" />
         </Link>

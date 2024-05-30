@@ -163,9 +163,9 @@ const BelanjaBumilScreen = () => {
         <Text style={styles.filterButtonText}>Filter</Text>
       </TouchableOpacity>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerButton}>
+        <Link href='/HomeScreen' style={styles.footerButton}>
           <MaterialIcons name="home" size={32} color="black" />
-        </TouchableOpacity>
+        </Link>
         <TouchableOpacity style={styles.footerButton}>
           <MaterialIcons name="shopping-cart" size={32} color="pink" />
         </TouchableOpacity>
