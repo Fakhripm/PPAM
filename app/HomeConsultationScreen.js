@@ -1,11 +1,17 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView } from 'react-native';
 import { Link } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
 
-export default function Home() {
+export default function Home({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Mulai Konsultasi</Text>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <MaterialIcons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.title}>Mulai Konsultasi</Text>
+      </View>
       <View style={styles.cardContainer}>
         <Link href="/ConsultationScreen" style={styles.card}>
           <View style={styles.cardContent}>
@@ -27,11 +33,13 @@ export default function Home() {
         </Link>
       </View>
       <Text style={styles.title}>Riwayat Konsultasi</Text>
-      <Link href="/HistoryScreen" style={styles.card}>
+      <Link href="/HistoryScreen" style={[styles.card, styles.historyCard]}>
         <View style={styles.cardContent}>
           <Image source={require('../assets/history.png')} style={styles.image} />
           <View style={styles.cardText}>
-            <Text style={styles.cardTitle}>Riwayat Konsultasi Kesehatan & Kehamilan</Text>
+          <Text style={[styles.cardTitle, styles.wrapText]} numberOfLines={2}>
+            Riwayat Konsultasi Kesehatan & Kehamilan
+        </Text>
           </View>
         </View>
       </Link>
@@ -44,18 +52,24 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
     padding: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  backButton: {
+    marginRight: 10,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 10,
     color: '#3D3D3D',
   },
   cardContainer: {
-    marginBottom: 20,
+    marginBottom: 25,
   },
   card: {
     backgroundColor: '#E3F2FD',
@@ -68,9 +82,13 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  historyCard: {
+    maxWidth: '100%',
+  },
   cardContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap'
   },
   image: {
     width: 50,
@@ -81,13 +99,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#3D3D3D',
+    flexWrap : "wrap" 
   },
   cardSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#7D7D7D',
+  },
+  wrapText: {
+    flexShrink  : 1,
+    flexWrap: 'wrap',
   },
   helpButton: {
     backgroundColor: '#4CAF50',
