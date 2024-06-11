@@ -13,7 +13,7 @@ const ProfileScreen = () => {
     async function fetchProfile() {
       try {
         const { data: userData, error: userError } = await supabase.auth.getUser();
-
+        
         if (userError) {
           console.error('Error fetching user:', userError);
           return;
@@ -73,7 +73,7 @@ const ProfileScreen = () => {
       const file = {
         uri,
         name: path,
-        type: 'image/jpeg',
+        type: 'image/jpeg', 
       };
 
       try {
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#FFF',
     borderRadius: 5,
-    width: '48%', // Adjusted to fit within container
+    width: 160,
     height: 80,
     borderWidth: 2,
     borderColor: '#FFF',
@@ -302,7 +302,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 12,
     textAlign: 'left',
-    flexShrink: 1, // Prevents text from overflowing
   },
   logoutButton: {
     width: '100%',
@@ -312,7 +311,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 80,
     alignItems: 'center',
-    justifyContent: 'center', // Adjusted for proper alignment
+    lineHeight: 38.59,
   },
   logoutButtonText: {
     color: '#FDB6DB',
