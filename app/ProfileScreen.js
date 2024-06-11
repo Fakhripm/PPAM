@@ -59,7 +59,7 @@ const ProfileScreen = () => {
     }
   }
 
-  const handleUploadImage = async () => {
+  /* const handleUploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -105,7 +105,7 @@ const ProfileScreen = () => {
         console.error('Unexpected error during image upload:', error);
       }
     }
-  };
+  }; */
 
   const updateProfileAvatar = async (url) => {
     try {
@@ -140,7 +140,7 @@ const ProfileScreen = () => {
               style={styles.profileImage}
               onError={(e) => console.error('Image loading error:', e.nativeEvent.error)}
             />
-            <TouchableOpacity style={styles.cameraIconContainer} onPress={handleUploadImage}>
+            <TouchableOpacity style={styles.cameraIconContainer}>
               <FontAwesome name="camera" size={24} color="white" />
             </TouchableOpacity>
           </View>

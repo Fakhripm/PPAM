@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/* import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
@@ -336,3 +336,4 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileScreen;
+ */
